@@ -1,0 +1,3 @@
+[submodule "timeitcpp"]
+	path = timeitcpp
+	url = https://github.com/realead/timeitcpp
