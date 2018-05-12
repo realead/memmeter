@@ -2,6 +2,14 @@
 
 experiments with memory
 
+##Instalation
+
+https://github.com/realead/timeitcpp is used as submodule, thus clone it with git clone --recursive.
+
+##Prerequisites
+
+g++-compiler, c++11
+
 
 ## band width
 
@@ -27,3 +35,28 @@ There are some things worth mentioning:
   * a performance drop of the L1 cache for sizes around 2KB
   * drop of speed for L1->L2 is more abrupt then L2->L3, it seems as if L1 were not shared between threads, but L2 is (at least to some degree)
   * L3 seems to be shared among all processors/threads
+
+
+## latency
+
+Prefetcher are damn good nowdays! To trick it out we prepare a single-cycle (so really whole memory is visited) permutation and tranverse trough it. Because of the randomness and dependency of the next step on the current there is nothing that the prefetcher can do.
+
+
+Running `sh run_test.sh latency` we get the following results:
+
+
+![1](results/output_test_latency.png)
+
+Results per single thread:
+
+    Memory type     Size         Latency (in ns)
+    L1 Cache:       32kB          1.6          *4-5 times slower than move between registers
+    L2 Cache:      128(256)kB     4.5          *3 times slower than L1-cache
+    L3 Cache:        4MB           40          *almost 10 times slower than L2-cache
+    RAM:             XXX           80          *2 times slower than L3-cache, 50 times slower than L1-cache and 200 times slower than register-move
+
+
+There are some things worth mentioning:
+
+  * it is not easy to fool the prefetcher!
+  * the experiments don't show such a clear picture, ther real latencies are probably somewhat higher (or should be taken at the and of the memory size for a cache-type, because random access might be cached)
