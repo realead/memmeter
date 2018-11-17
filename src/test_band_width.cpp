@@ -10,9 +10,10 @@ const int BLOCK_SIZE=16;
 
 
 struct Worker{
+   // there is no overhead in using std::vector
+   // but just in case...
    int *mem;
-   int n;
-   int times;  
+   int n;  
    int result;
    void operator()(){
         for(int i=0;i<n;i+=BLOCK_SIZE){           
@@ -21,7 +22,7 @@ struct Worker{
    }
 
    Worker(std::vector<int> &mem_):
-       mem(mem_.data()),n(static_cast<int>(mem_.size())), times(0), result(1.0)
+       mem(mem_.data()),n(static_cast<int>(mem_.size())), result(1.0)
    {}
 };
 
