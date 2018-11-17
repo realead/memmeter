@@ -2,21 +2,25 @@
 
 experiments with memory
 
-##Instalation
+## Instalation
 
 https://github.com/realead/timeitcpp is used as submodule, thus clone it with git clone --recursive.
 
-##Prerequisites
+## Prerequisites
 
-g++-compiler, c++11
+  1. g++-compiler, c++11 (tweak `sh run_test.sh` if you use another c++11-capable compiler).
+  2. python + pandas + matplotlib, for creating result-charts.
 
 
 ## band width
 
-My machine can do about 10^9 double-multiplications per second,  that means at most 8GB/s per single processor. But data is fetched in 64bytes, so steping over 7 doubles and utilizing only 8 bytes we get to 64 GB/s. A integer addition can be done in 0.35 seconds thus leading to maximal band width of 182 GB/s.
+My machine (an Intel-Broadwell)  can do about 10^9 double-multiplications per second, that means at most 8GB/s per single processor. But data is fetched in 64bytes, so stepping over 7 doubles and utilizing only 8 bytes we'll get to 64 GB/s. 
+
+Even better, an integer addition can be done in 0.35 seconds thus leading to maximal band width of 182 GB/s. There is no pipeling for integer-addition (as compared to float-addition), so we don't have to watch out for dependencies on the prefivious results.
 
 
-Running `sh run_test.sh band_width` we get the following results:
+Running `sh run_test.sh band_width` we get the following results (will be saved in `src/output_test_band_width.png`, `src/output_test_band_width.txt`)
+):
 
 
 ![1](results/output_test_band_width.png)
@@ -32,17 +36,17 @@ Results per single thread:
 
 There are some things worth mentioning:
 
-  * a performance drop of the L1 cache for sizes around 2KB
-  * drop of speed for L1->L2 is more abrupt then L2->L3, it seems as if L1 were not shared between threads, but L2 is (at least to some degree)
+  * a performance drop of the L1 cache for sizes around 2KB (reason is yet unknown to me)
+  * drop of speed for L1->L2 is more abrupt than L2->L3, it seems as if L1 were not shared between threads, but L2 is (at least to some degree)
   * L3 seems to be shared among all processors/threads
 
 
 ## latency
 
-Prefetcher are damn good nowdays! To trick it out we prepare a single-cycle (so really whole memory is visited) permutation and tranverse trough it. Because of the randomness and dependency of the next step on the current there is nothing that the prefetcher can do.
+Prefetcher are damn good nowdays! To trick it out we prepare a single-cycle (so really whole memory is visited) permutation and tranverse trough it. Because of the randomness and dependency of the next step on the currently fetched data there is nothing that the prefetcher can do.
 
 
-Running `sh run_test.sh latency` we get the following results:
+Running `sh run_test.sh latency` we get the following results (will be saved in `src/output_test_latency.png`, `src/output_test_latency.txt`):
 
 
 ![1](results/output_test_latency.png)
