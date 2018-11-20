@@ -65,7 +65,7 @@ int main(){
    std::cout<<"size(kB),bandwidth(GB/s)\n";
    while(size<8e3){
        std::cout<<get_size_in_kB(size)<<","<<get_speed_in_GB_per_sec(size)<<"\n";
-       size=(static_cast<int>(size+BLOCK_SIZE*10)/BLOCK_SIZE)*BLOCK_SIZE;
+       size=(static_cast<int>(size+BLOCK_SIZE)/BLOCK_SIZE)*BLOCK_SIZE;
    }
 
    //ensure that nothing is optimized away:
