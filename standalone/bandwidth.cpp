@@ -29,16 +29,16 @@ const size_t BLOCK_SIZE=16;
 
 
 struct Worker{
-   std::vector<int> &mem;
+   std::vector<unsigned int> &mem;
    size_t n;
-   int result;
+   unsigned int result;
    void operator()(){
         for(size_t i=0;i<n;i+=BLOCK_SIZE){           
              result+=mem[i];
         }
    }
 
-   Worker(std::vector<int> &mem_):
+   Worker(std::vector<unsigned int> &mem_):
        mem(mem_), n(mem.size()), result(1)
    {}
 };
@@ -51,7 +51,7 @@ double get_size_in_kB(int SIZE){
 }
 
 double get_speed_in_GB_per_sec(int SIZE){
-   std::vector<int> vals(SIZE, 42);
+   std::vector<unsigned int> vals(SIZE, 42);
    Worker worker(vals);
    double time=timeit(worker, NTRIES, NITER);
    PREVENT_OPTIMIZATION+=worker.result;
@@ -63,7 +63,7 @@ int main(){
   
    int size=BLOCK_SIZE*16;
    std::cout<<"size(kB),bandwidth(GB/s)\n";
-   while(size<8e3){
+   while(size<10e3){
        std::cout<<get_size_in_kB(size)<<","<<get_speed_in_GB_per_sec(size)<<"\n";
        size=(static_cast<int>(size+BLOCK_SIZE)/BLOCK_SIZE)*BLOCK_SIZE;
    }
