@@ -15,7 +15,7 @@ print(data.head())
 
 labels=list(data)
 
-plt.plot(data[labels[0]], data[labels[1]], label="my laptop")
+plt.semilogx(data[labels[0]], data[labels[1]], label="my laptop")
 plt.xlabel(labels[0])
 plt.ylabel(labels[1])
 
