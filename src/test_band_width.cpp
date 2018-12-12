@@ -12,16 +12,16 @@ const int BLOCK_SIZE=16;
 struct Worker{
    // there is no overhead in using std::vector
    // but just in case...
-   int *mem;
+   unsigned int *mem;
    int n;  
-   int result;
+   unsigned int result;
    void operator()(){
         for(int i=0;i<n;i+=BLOCK_SIZE){           
              result+=mem[i];
         }
    }
 
-   Worker(std::vector<int> &mem_):
+   Worker(std::vector<unsigned int> &mem_):
        mem(mem_.data()),n(static_cast<int>(mem_.size())), result(1.0)
    {}
 };
@@ -35,7 +35,7 @@ double get_size_in_kB(int SIZE){
 }
 
 double get_speed_in_GB_per_sec(int SIZE){
-   std::vector<int> vals(SIZE, 42);
+   std::vector<unsigned int> vals(SIZE, 42);
    Worker worker(vals);
    double time=timeitmagic::timeit(worker, TRIES, ITER).time;
    PREVENT_OPTIMIZATION+=worker.result;
