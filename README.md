@@ -16,7 +16,7 @@ https://github.com/realead/timeitcpp is used as submodule, thus clone it with gi
 
 My machine (an Intel-Broadwell)  can do about 10^9 double-multiplications per second, that means at most 8GB/s per single processor. But data is fetched in 64bytes, so stepping over 7 doubles and utilizing only 8 bytes we'll get to 64 GB/s. 
 
-Even better, an integer addition can be done in 0.35 seconds thus leading to maximal band width of 182 GB/s. There is no pipeling for integer-addition (as compared to float-addition), so we don't have to watch out for dependencies on the prefivious results.
+Even better, an integer addition can be done in 0.35 nano-seconds thus leading to maximal band width of 182 GB/s. There is no pipeling for integer-addition (as compared to float-addition), so we don't have to watch out for dependencies on the prefivious results.
 
 
 Running `sh run_test.sh band_width` we get the following results (will be saved in `src/output_test_band_width.png`, `src/output_test_band_width.txt`)
@@ -28,17 +28,23 @@ Running `sh run_test.sh band_width` we get the following results (will be saved 
 Results per single thread:
 
     Memory type     Size         Speed (GB/s)
-    L1 Cache:       32kB          140            *there are not really 64 fetched, 
-    L2 Cache:      128(256)kB      80            *For whatever reason the second 128k pof 256kB L2-cachel are not that easily utilized
-    L3 Cache:        4MB           30
+    L1 Cache:       32kB          310            *there are not really 64 byte fetched,  so 310 isn't really valid
+    L2 Cache:      128(256)kB      80            *For whatever reason the second 128k of 256kB L2-cachel are not that easily utilized
+    L3 Cache:        4MB           35
     RAM:             XXX           13
 
 
 There are some things worth mentioning:
 
-  * a performance drop of the L1 cache for sizes around 2KB (reason is yet unknown to me)
   * drop of speed for L1->L2 is more abrupt than L2->L3, it seems as if L1 were not shared between threads, but L2 is (at least to some degree)
   * L3 seems to be shared among all processors/threads
+
+I'm not really sure that for L1-cache the task is bandwidth bound. At least it is important to unroll the inner loop, otherwise 2 addition and not one addition are needed per memory access. There is also an issue with branch misses which leads to a performance drop if inner loop has around 32 interation:
+
+![1](results/output_test_band_width_nounroll.png)
+
+
+See https://stackoverflow.com/q/53751321/5769463 for more details
 
 
 ## latency

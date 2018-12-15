@@ -7,6 +7,7 @@
 
 
 const int BLOCK_SIZE=16;
+const int UNROLL=8;
 
 
 struct Worker{
@@ -16,8 +17,9 @@ struct Worker{
    int n;  
    unsigned int result;
    void operator()(){
-        for(int i=0;i<n;i+=BLOCK_SIZE){           
-             result+=mem[i];
+        for(int i=0;i<n;i+=BLOCK_SIZE*UNROLL){ 
+           for(int j=0;j<UNROLL;j++)          
+             result+=mem[i+BLOCK_SIZE*j];
         }
    }
 
@@ -49,9 +51,9 @@ int main(){
    
    int size=BLOCK_SIZE*16;
    std::cout<<"size(kB),bandwidth(GB/s)\n";
-   while(size<5e7){
+   while(size<5e6){
        std::cout<<get_size_in_kB(size)<<","<<get_speed_in_GB_per_sec(size)<<"\n";
-       size=(static_cast<int>(size*1.2)/BLOCK_SIZE)*BLOCK_SIZE;
+       size=(static_cast<int>(size*1.05+BLOCK_SIZE*UNROLL)/(BLOCK_SIZE*UNROLL))*(BLOCK_SIZE*UNROLL);
    }
 
    //ensure that nothing is optimized away:
